@@ -1,0 +1,76 @@
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://curqan7sssrvd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_effvi"]
+bg_color = Color(0.1738, 0.18304, 0.22, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 1
+shadow_offset = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r6pm8"]
+bg_color = Color(0.831373, 0.121569, 0.509804, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 3
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t61x0"]
+bg_color = Color(0.713726, 0.207843, 0.611765, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_size = 3
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f5wm8"]
+bg_color = Color(0.0745098, 0.0784314, 0.0941176, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 3
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qnwsh"]
+bg_color = Color(0.937255, 0.0392157, 0.415686, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 3
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_46ck8"]
+bg_color = Color(0.0823529, 0.0862745, 0.105882, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dks40"]
+bg_color = Color(0.0745098, 0.0784314, 0.0941176, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 4
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xfa2m"]
+bg_color = Color(0.803922, 0.184314, 0.537255, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[resource]
+Button/font_sizes/font_size = 20
+Button/styles/disabled = SubResource("StyleBoxFlat_effvi")
+Button/styles/focus = SubResource("StyleBoxFlat_r6pm8")
+Button/styles/hover = SubResource("StyleBoxFlat_t61x0")
+Button/styles/normal = SubResource("StyleBoxFlat_f5wm8")
+Button/styles/pressed = SubResource("StyleBoxFlat_qnwsh")
+Panel/styles/panel = SubResource("StyleBoxFlat_46ck8")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_dks40")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_xfa2m")

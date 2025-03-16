@@ -1,0 +1,113 @@
+[gd_scene load_steps=5 format=3 uid="uid://bgvwr3qopusg8"]
+
+[ext_resource type="Script" uid="uid://cpgg1ye5n88fx" path="res://core/ui/components/dialog.gd" id="1_1eqwo"]
+[ext_resource type="Script" uid="uid://cnguxa72sjiij" path="res://core/systems/effects/fade_effect.gd" id="2_f8dbm"]
+[ext_resource type="Script" uid="uid://op6hhnff7x1j" path="res://core/systems/effects/slide_effect.gd" id="3_1y1ye"]
+[ext_resource type="Script" uid="uid://dv60h3e8rx0qk" path="res://core/systems/focus/focus_grabber.gd" id="4_1y1ye"]
+
+[node name="Dialog" type="Control" groups=["dialog", "popup"]]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1eqwo")
+
+[node name="FadeEffect" type="Node" parent="." node_paths=PackedStringArray("target")]
+script = ExtResource("2_f8dbm")
+target = NodePath("..")
+fade_speed = 0.2
+on_signal = "opened"
+fade_out_signal = "closed"
+on_signal = "opened"
+on_signal = "opened"
+metadata/_custom_type_script = "uid://cnguxa72sjiij"
+
+[node name="SlideEffect" type="Node" parent="." node_paths=PackedStringArray("target")]
+script = ExtResource("3_1y1ye")
+target = NodePath("../Spacer")
+slide_speed = 0.4
+margin = 0
+direction = "up"
+on_signal = "opened"
+slide_out_signal = "closed"
+on_signal = "opened"
+on_signal = "opened"
+metadata/_custom_type_script = "uid://op6hhnff7x1j"
+
+[node name="FocusGrabber" type="Node" parent="SlideEffect" node_paths=PackedStringArray("target")]
+script = ExtResource("4_1y1ye")
+target = NodePath("../../Spacer/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ConfirmButton")
+forced = true
+on_signal = "effect_finished"
+metadata/_custom_type_script = "uid://dv60h3e8rx0qk"
+
+[node name="Spacer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 0
+
+[node name="CenterContainer" type="CenterContainer" parent="Spacer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Spacer/CenterContainer"]
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Spacer/CenterContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Spacer/CenterContainer/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="Spacer/CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+text = "This is a dialog message with some text in it"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="Spacer/CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Spacer/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ConfirmButton" type="Button" parent="Spacer/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_neighbor_left = NodePath("../CancelButton")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath("../CancelButton")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath("../CancelButton")
+focus_previous = NodePath("../CancelButton")
+text = "Yes"
+
+[node name="CancelButton" type="Button" parent="Spacer/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_neighbor_left = NodePath("../ConfirmButton")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath("../ConfirmButton")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath("../ConfirmButton")
+focus_previous = NodePath("../ConfirmButton")
+text = "No"

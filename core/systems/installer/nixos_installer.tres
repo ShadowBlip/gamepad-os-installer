@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="NixOsInstaller" load_steps=2 format=3 uid="uid://476u2vbh1yf1"]
+
+[ext_resource type="Script" uid="uid://7bb16xbkrksk" path="res://core/systems/installer/nixos_installer.gd" id="1_5ej4u"]
+
+[resource]
+script = ExtResource("1_5ej4u")
+metadata/_custom_type_script = "uid://7bb16xbkrksk"

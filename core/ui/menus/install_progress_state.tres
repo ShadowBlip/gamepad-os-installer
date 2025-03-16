@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="State" load_steps=2 format=3 uid="uid://dqlpk3k7h2mep"]
+
+[ext_resource type="Script" uid="uid://crcke008n1q5c" path="res://core/systems/state/state.gd" id="1_0gaaj"]
+
+[resource]
+script = ExtResource("1_0gaaj")
+name = "install_progress"
+data = {}
+metadata/_custom_type_script = "uid://crcke008n1q5c"

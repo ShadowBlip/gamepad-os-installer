@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="StateMachine" load_steps=2 format=3 uid="uid://721852jedisx"]
+
+[ext_resource type="Script" uid="uid://byvpp6kmsp260" path="res://core/systems/state/state_machine.gd" id="1_7lfdl"]
+
+[resource]
+script = ExtResource("1_7lfdl")
+logger_name = "StateMachine"
+metadata/_custom_type_script = "uid://byvpp6kmsp260"

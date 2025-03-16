@@ -1,0 +1,99 @@
+[gd_scene load_steps=6 format=3 uid="uid://coo25pqrjpsee"]
+
+[ext_resource type="Script" uid="uid://d3ow2td2whigf" path="res://core/ui/menus/install_progress_menu.gd" id="1_qn1df"]
+[ext_resource type="Script" uid="uid://do1845tkjuib" path="res://core/systems/state/state_watcher.gd" id="2_hk01u"]
+[ext_resource type="Resource" uid="uid://dqlpk3k7h2mep" path="res://core/ui/menus/install_progress_state.tres" id="3_hk01u"]
+[ext_resource type="Script" uid="uid://cnguxa72sjiij" path="res://core/systems/effects/fade_effect.gd" id="4_y650q"]
+[ext_resource type="Script" uid="uid://op6hhnff7x1j" path="res://core/systems/effects/slide_effect.gd" id="5_s4xg7"]
+
+[node name="InstallProgressMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qn1df")
+
+[node name="StateWatcher" type="Node" parent="."]
+script = ExtResource("2_hk01u")
+state = ExtResource("3_hk01u")
+metadata/_custom_type_script = "uid://do1845tkjuib"
+
+[node name="FadeEffect" type="Node" parent="StateWatcher" node_paths=PackedStringArray("target")]
+script = ExtResource("4_y650q")
+target = NodePath("../..")
+fade_speed = 0.7
+on_signal = "state_entered"
+fade_out_signal = "state_exited"
+on_signal = "state_entered"
+on_signal = "state_entered"
+metadata/_custom_type_script = "uid://cnguxa72sjiij"
+
+[node name="SlideEffect" type="Node" parent="StateWatcher" node_paths=PackedStringArray("target")]
+script = ExtResource("5_s4xg7")
+target = NodePath("../../MarginContainer")
+slide_speed = 0.4
+margin = 100
+direction = "down"
+on_signal = "state_entered"
+slide_out_signal = "state_exited"
+on_signal = "state_entered"
+on_signal = "state_entered"
+metadata/_custom_type_script = "uid://op6hhnff7x1j"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TabContainer" type="TabContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 0
+
+[node name="Log" type="MarginContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+metadata/_tab_index = 0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/TabContainer/Log"]
+layout_mode = 2
+follow_focus = true
+horizontal_scroll_mode = 0
+
+[node name="LogText" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TabContainer/Log/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true
+
+[node name="StatusLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Bootstrapping Disk"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+rounded = true
