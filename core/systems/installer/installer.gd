@@ -142,7 +142,8 @@ func get_partitions(disk: Disk) -> PackedStringArray:
 			continue
 		var parts := line.split(" ", false, 2)
 		partitions.append("/dev/" + parts[0])
-		
+	partitions.sort()
+
 	return partitions
 
 
