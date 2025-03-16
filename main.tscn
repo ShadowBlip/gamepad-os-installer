@@ -34,7 +34,6 @@ grow_vertical = 2
 theme = ExtResource("1_ryguw")
 script = ExtResource("1_ig7tw")
 installer = ExtResource("14_yaehf")
-dry_run = true
 
 [node name="NetworkManager" type="Node" parent="."]
 script = ExtResource("3_dg77c")
