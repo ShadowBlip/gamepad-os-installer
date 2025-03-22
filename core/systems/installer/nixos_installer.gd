@@ -89,7 +89,7 @@ func install(to_disk: Disk, dry_run: bool = false) -> void:
 		return
 
 	# Append the facter path to configuration.nix
-	result = await execute("sudo", ["sed", "-i", "s|^}$|  # Path to the output of `nixos-facter` with hardware details\\n  facter.reportPath = ./facter.json;\\n}|g"])
+	result = await execute("sudo", ["sed", "-i", "s|^}$|  # Path to the output of `nixos-facter` with hardware details\\n  facter.reportPath = ./facter.json;\\n}|g", "/mnt/etc/nixos/configuration.nix"])
 	if result.code != OK:
 		finish(STATUS.FAILED, "Failed to append facter report to configuration")
 		return
