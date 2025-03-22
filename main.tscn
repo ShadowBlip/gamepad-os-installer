@@ -212,4 +212,5 @@ offset_top = -112.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("23_d13ii")
+auto_show = false
 metadata/_custom_type_script = "uid://cesorwv7214kh"

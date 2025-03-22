@@ -22,7 +22,7 @@ func _init(_key_data):
 	size_flags_horizontal = SIZE_EXPAND_FILL
 	size_flags_vertical = SIZE_EXPAND_FILL
 
-	focus_mode = FOCUS_NONE
+	#focus_mode = FOCUS_NONE
 
 	if key_data.has("display"):
 		text = key_data.get("display")
@@ -60,7 +60,7 @@ func _on_item_rect_changed():
 
 func _on_button_up():
 	released.emit(key_data)
-	release_focus()
+	#release_focus()
 
 
 func _on_button_down():

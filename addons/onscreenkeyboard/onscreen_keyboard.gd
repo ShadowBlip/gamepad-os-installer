@@ -54,6 +54,8 @@ var style_special_keys:StyleBoxFlat = null
 @export var font_color_hover:Color = Color(1,1,1)
 @export var font_color_pressed:Color = Color(1,1,1)
 
+var target: Control
+
 ###########################
 ## SIGNALS
 ###########################
@@ -127,7 +129,8 @@ func _init_keyboard():
 
 var focus_object = null
 
-func show():
+func show(kb_target: Control = null):
+	target = kb_target
 	_show_keyboard()
 
 func hide():
@@ -171,6 +174,8 @@ func _hide_keyboard(key_data=null):
 		animate_position(Vector2(position.x, new_y_pos), true)
 	else:
 		change_visibility(false)
+	if target:
+		target.grab_focus.call_deferred()
 
 
 func _show_keyboard(key_data=null):
@@ -180,10 +185,23 @@ func _show_keyboard(key_data=null):
 		animate_position(Vector2(position.x, new_y_pos))
 
 
+func _focus_key() -> void:
+	var idx := 0
+	while idx < 10:
+		if get_child(idx).is_visible_in_tree():
+			break
+		idx += 1
+	var button := get_child(idx).get_child(0).get_child(0).get_child(0)
+	button.grab_focus.call_deferred()
+
+
 func animate_position(new_position, trigger_visibility:bool=false):
 	var tween = get_tree().create_tween()
 	if trigger_visibility:
 		tween.finished.connect(change_visibility.bind(!visible))
+	else:
+		# Focus the first key in the keyboard when shown
+		tween.finished.connect(_focus_key)
 	tween.tween_property(
 		self,"position",
 		Vector2(new_position),
@@ -236,13 +254,16 @@ func _switch_layout(key_data):
 	if key_data.get("layout-name") == "PREVIOUS-LAYOUT":
 		if prev_prev_layout != null:
 			_show_layout(prev_prev_layout)
+			_focus_key()
 			return
 
 	for layout in layouts:
 		if layout.get_meta("layout_name") == key_data.get("layout-name"):
 			_show_layout(layout)
+			_focus_key()
 			return
-
+	
+	_focus_key()
 	_set_caps_lock(false)
 
 
@@ -270,33 +291,58 @@ func _trigger_uppercase(key_data):
 
 
 func _key_released(key_data):
-	if key_data.has("output"):
-		var key_value = key_data.get("output")
+	if not key_data.has("output"):
+		return
+	var key_value = key_data.get("output")
 
-		###########################
-		## DISPATCH InputEvent 
-		###########################
+	###########################
+	## DISPATCH InputEvent 
+	###########################
 
-		var input_event_key = InputEventKey.new()
-		input_event_key.shift_pressed = uppercase
-		input_event_key.alt_pressed = false
-		input_event_key.meta_pressed = false
-		input_event_key.ctrl_pressed = false
-		input_event_key.pressed = true
+	var input_event_key = InputEventKey.new()
+	input_event_key.shift_pressed = uppercase
+	input_event_key.alt_pressed = false
+	input_event_key.meta_pressed = false
+	input_event_key.ctrl_pressed = false
+	input_event_key.pressed = true
 
-		var key = KeyListHandler.get_key_from_string(key_value)
-		if !uppercase && KeyListHandler.has_lowercase(key_value):
-			key +=32
+	var key = KeyListHandler.get_key_from_string(key_value)
+	if !uppercase && KeyListHandler.has_lowercase(key_value):
+		key +=32
 
-		input_event_key.keycode = key
-		input_event_key.unicode = key
+	input_event_key.keycode = key
+	input_event_key.unicode = key
 
+	if target and target is LineEdit:
+		var key_string := OS.get_keycode_string(input_event_key.keycode)
+		print("Sending key: ", key_string)
+		if key_string == "Backspace":
+			var text := target.text as String
+			if text.length() > 0:
+				target.text = text.substr(0, text.length() - 1)
+				target.caret_column -= 1
+		elif key_string == "Left":
+			target.caret_column -= 1
+		elif key_string == "Right":
+			target.caret_column += 1
+		elif key_string == "Enter" or key_string == "Return":
+			hide()
+		elif key_string == "Comma":
+			target.text += ","
+			target.caret_column += 1
+		elif key_string == "Period":
+			target.text += "."
+			target.caret_column += 1
+		else:
+			target.text += key_string
+			target.caret_column += 1
+	else:
 		Input.parse_input_event(input_event_key)
 
-		###########################
-		## DISABLE CAPSLOCK AFTER 
-		###########################
-		_set_caps_lock(false)
+	###########################
+	## DISABLE CAPSLOCK AFTER 
+	###########################
+	_set_caps_lock(false)
 
 
 ###########################

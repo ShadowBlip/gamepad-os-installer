@@ -41,14 +41,26 @@ signal choice_selected(accepted: bool, password: String)
 @onready var checkbox := %CheckBox as CheckBox
 @onready var confirm_button := %ConfirmButton as Button
 @onready var cancel_button := %CancelButton as Button
+@onready var open_effect := %SlideEffect as Effect
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	open_effect.effect_finished.connect(_on_opened)
 	confirm_button.button_up.connect(_on_selected.bind(true))
 	cancel_button.button_up.connect(_on_selected.bind(false))
 	checkbox.toggled.connect(_on_checkbox)
 	_on_checkbox(checkbox.button_pressed)
+	
+	# Open the OSK if the user hits enter on the line edit
+	var on_enter_line_edit := func(event: InputEvent):
+		if not event.is_action("ui_accept"):
+			return
+		var osk := get_tree().get_first_node_in_group("osk")
+		if not osk:
+			return
+		osk.show(line_edit)
+	line_edit.gui_input.connect(on_enter_line_edit)
 
 
 ## Invoked when confirm or cancel is selected
@@ -77,16 +89,20 @@ func open(message: String = "", confirm_txt: String = "", cancel_txt: String = "
 	if cancel_txt != "":
 		cancel_text = cancel_txt
 
-	var osk := get_tree().get_first_node_in_group("osk")
-	if osk:
-		osk.show()
-
 	opened.emit()
 
 
 ## Closes the dialog
 func close() -> void:
 	closed.emit()
+
+
+func _on_opened() -> void:
+	var osk := get_tree().get_first_node_in_group("osk")
+	if not osk:
+		return
+	osk.show(line_edit)
+	osk.grab_focus.call_deferred()
 
 
 func _input(event: InputEvent) -> void:
