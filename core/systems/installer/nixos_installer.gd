@@ -58,7 +58,7 @@ func install(to_disk: Disk, dry_run: bool = false) -> void:
 		finish(STATUS.FAILED, "Failed to format EFI partition")
 		return
 
-	set_stage("Installing system")
+	set_stage("Mounting target drive")
 	set_progress(4)
 	result = await execute("sudo", ["mount", root_part, "/mnt"])
 	if result.code != OK:
@@ -79,6 +79,21 @@ func install(to_disk: Disk, dry_run: bool = false) -> void:
 		finish(STATUS.FAILED, "Failed to generate configuration.nix")
 		return
 
+	# Use nixos-facter to gather hardware-specific information about the system.
+	# This can be used to create device-specific configs.
+	set_stage("Generating hardware configuration")
+	set_progress(7)
+	result = await execute("sudo", ["nixos-facter", "-o", "/mnt/etc/nixos/facter.json"])
+	if result.code != OK:
+		finish(STATUS.FAILED, "Failed to run nixos-facter to gather system information")
+		return
+
+	# Append the facter path to configuration.nix
+	result = await execute("sudo", ["sed", "-i", "s|^}$|  # Path to the output of `nixos-facter` with hardware details\\n  facter.reportPath = ./facter.json;\\n}|g"])
+	if result.code != OK:
+		finish(STATUS.FAILED, "Failed to append facter report to configuration")
+		return
+
 	var flake := FileAccess.open("/tmp/flake.nix", FileAccess.WRITE)
 	flake.store_string(FLAKE_TEMPLATE)
 	flake.close()
@@ -87,10 +102,11 @@ func install(to_disk: Disk, dry_run: bool = false) -> void:
 		finish(STATUS.FAILED, "Failed to copy flake configuration")
 		return
 
+	set_stage("Installing system")
 	progress = 10
 	var on_pty_line_written := func(line: String) -> PackedByteArray:
 		if line.contains("copying path") and progress < 50:
-			progress += 0.1
+			progress += 0.07
 		elif line.contains("building") and progress < 90:
 			progress += 0.1
 		elif line.contains("New password:"):
