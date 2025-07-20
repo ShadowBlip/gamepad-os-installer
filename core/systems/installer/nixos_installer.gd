@@ -15,7 +15,8 @@ func get_configuration() -> Configuration:
 	return config
 
 
-func install(to_disk: Disk, dry_run: bool = false) -> void:
+func install(options: Options, dry_run: bool = false) -> void:
+	var to_disk := options.target_disk
 	set_stage("Formatting disk")
 	write_log("Formatting disk: " + to_disk.path)
 
@@ -109,6 +110,26 @@ func install(to_disk: Disk, dry_run: bool = false) -> void:
 	if result.code != OK:
 		finish(STATUS.FAILED, "Failed to copy OS configuration")
 		return
+
+	set_stage("Configuring Boot")
+	result = await execute("sudo", ["sbctl", "create-keys"])
+	if result.code != OK:
+		write_log("Failed to generate secure boot keys.")
+	if result.code == OK:
+		result = await execute("sudo", ["mkdir", "-p", "/mnt/var/lib"])
+		if result.code != OK:
+			write_log("Failed to create target directory for key enrollment")
+	if result.code == OK:
+		result = await execute("sudo", ["cp", "-rp", "/var/lib/sbctl", "/mnt/var/lib/sbctl"])
+		if result.code != OK:
+			write_log("Failed to copy generated enrollment keys to target")
+
+	var secure_boot_state := get_secureboot_state()
+	if secure_boot_state and secure_boot_state.setup_mode and result.code == OK:
+		write_log("Secure boot setup is enabled. Enrolling keys.")
+		result = await execute("sudo", ["sbctl", "enroll-keys", "--microsoft"])
+		if result.code != OK:
+			write_log("Failed to enroll keys")
 
 	set_stage("Installing system")
 	progress = 10

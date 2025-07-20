@@ -9,6 +9,8 @@ extends Control
 @onready var install_menu := %InstallProgressMenu
 @onready var logo := %Logo as TextureRect
 
+var install_state := load("res://core/ui/menus/install_progress_state.tres") as State
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -24,6 +26,10 @@ func _ready() -> void:
 			logo.texture = config.logo
 		if config.theme:
 			self.theme = config.theme
+
+	# Create the install options
+	if not install_state.has_meta("options"):
+		install_state.set_meta("options", Installer.Options.new())
 
 	# Set the installer logic to use
 	disk_menu.set_installer(installer)

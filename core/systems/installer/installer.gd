@@ -100,6 +100,35 @@ func get_configuration() -> Configuration:
 	return Configuration.new()
 
 
+## Returns the current secureboot state
+func get_secureboot_state() -> SecureBootState:
+	var cmd := _create_command("sbctl", ["status", "--json"])
+	if cmd.execute_blocking() != OK:
+		print("Unable to read secureboot state: " + cmd.stdout + cmd.stderr)
+		return null
+
+	var parsed = JSON.parse_string(cmd.stdout)
+	if not parsed is Dictionary:
+		print("Unable to read secureboot state: " + cmd.stdout + cmd.stderr)
+		return null
+	var data := parsed as Dictionary
+
+	var state := SecureBootState.new()
+	if "installed" in data and data["installed"] is bool:
+		state.installed = data["installed"]
+	if "guid" in data and data["guid"] is String:
+		state.guid = data["guid"]
+	if "setup_mode" in data and data["setup_mode"] is bool:
+		state.setup_mode = data["setup_mode"]
+	if "vendors" in data and data["vendors"] is Array:
+		state.vendors = []
+		var vendors := data["vendors"] as Array
+		for vendor in vendors:
+			state.vendors.push_back(vendor)
+
+	return state
+
+
 ## Return the available disks
 func get_available_disks() -> Array[Disk]:
 	var disks: Array[Disk] = []
@@ -153,7 +182,7 @@ func has_existing_install(path: String) -> bool:
 
 
 ## Starts installing the OS to the given disk.
-func install(to_disk: Disk, dry_run: bool = false) -> void:
+func install(options: Options, dry_run: bool = false) -> void:
 	write_log("Installation started")
 	finish(STATUS.FAILED, "Installer has not implemented install steps")
 
@@ -190,6 +219,12 @@ class Configuration:
 		requires_internet = true
 
 
+## Installation options
+class Options:
+	var target_disk: Disk
+	var full_disk_encrypt: bool
+
+
 ## Simple container for holding information about a disk
 class Disk:
 	var name: String
@@ -197,3 +232,13 @@ class Disk:
 	var model: String
 	var size: String
 	var install_found: bool
+
+
+## Container for storing secure boot state
+class SecureBootState:
+	var installed: bool
+	var guid: String
+	var setup_mode: bool
+	var secure_boot: bool
+	var vendors: Array[String]
+	var firmware_quirks: Array[String]

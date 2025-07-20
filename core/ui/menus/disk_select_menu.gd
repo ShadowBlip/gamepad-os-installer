@@ -1,7 +1,7 @@
 extends Control
 
 var state_machine := load("res://core/ui/menus/global_state_machine.tres") as StateMachine
-var next_state := load("res://core/ui/menus/install_progress_state.tres") as State
+var install_state := load("res://core/ui/menus/install_progress_state.tres") as State
 
 @onready var tree := %Tree as Tree
 @onready var next_button := %NextButton as Button
@@ -67,5 +67,6 @@ func _on_next_pressed() -> void:
 		return
 
 	# Start the installation
-	next_state.set_meta("disk", disk)
-	state_machine.set_state([next_state])
+	var options := install_state.get_meta("options") as Installer.Options
+	options.target_disk = disk
+	state_machine.set_state([install_state])

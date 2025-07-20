@@ -28,12 +28,12 @@ func _on_state_entered(_from: State) -> void:
 	if not _installer:
 		push_error("No installer implementation selected!")
 		return
-	if not install_state.has_meta("disk"):
-		push_error("No `Disk` was found in state metadata!")
+	if not install_state.has_meta("options"):
+		push_error("No `Options` was found in state metadata!")
 		return
-	var disk := install_state.get_meta("disk") as Installer.Disk
-	print("Starting installation to disk: ", disk.path)
-	_installer.install(disk, _dry_run)
+	var options := install_state.get_meta("options") as Installer.Options
+	print("Starting installation to disk: ", options.target_disk.path)
+	_installer.install(options, _dry_run)
 
 
 func _on_install_progressed(percent: float) -> void:
