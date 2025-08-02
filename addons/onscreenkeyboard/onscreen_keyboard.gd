@@ -299,7 +299,7 @@ func _key_released(key_data):
 	## DISPATCH InputEvent 
 	###########################
 
-	var input_event_key = InputEventKey.new()
+	var input_event_key := InputEventKey.new()
 	input_event_key.shift_pressed = uppercase
 	input_event_key.alt_pressed = false
 	input_event_key.meta_pressed = false
@@ -315,27 +315,31 @@ func _key_released(key_data):
 
 	if target and target is LineEdit:
 		var key_string := OS.get_keycode_string(input_event_key.keycode)
+		var line_edit := target as LineEdit
+		var caret_position := line_edit.caret_column
 		print("Sending key: ", key_string)
-		if key_string == "Backspace":
-			var text := target.text as String
+
+		if key_string.length() == 1:
+			var text := line_edit.text
+			line_edit.text = text.insert(caret_position, key_string)
+			line_edit.caret_column = caret_position + 1
+		elif key_string == "Backspace":
+			var text := line_edit.text as String
 			if text.length() > 0:
-				target.text = text.substr(0, text.length() - 1)
-				target.caret_column -= 1
+				line_edit.text = text.erase(caret_position - 1)
+				line_edit.caret_column = caret_position - 1
 		elif key_string == "Left":
-			target.caret_column -= 1
+			if line_edit.caret_column > 0:
+				line_edit.caret_column = caret_position - 1
 		elif key_string == "Right":
-			target.caret_column += 1
+			if line_edit.caret_column < line_edit.text.length():
+				line_edit.caret_column = caret_position + 1
 		elif key_string == "Enter" or key_string == "Return":
 			hide()
-		elif key_string == "Comma":
-			target.text += ","
-			target.caret_column += 1
-		elif key_string == "Period":
-			target.text += "."
-			target.caret_column += 1
 		else:
-			target.text += key_string
-			target.caret_column += 1
+			var text := line_edit.text
+			line_edit.text = text.insert(caret_position, key_value)
+			line_edit.caret_column = caret_position + 1
 	else:
 		Input.parse_input_event(input_event_key)
 
