@@ -170,7 +170,7 @@ const FLAKE_TEMPLATE: String = """
   description = "OS Flake";
 
   inputs = {
-	shadowblip.url = "gitlab:shadowapex/os-flake?ref=stable";
+	shadowblip.url = "github:shadowblip/blipcore?ref=stable";
   };
 
   outputs =
